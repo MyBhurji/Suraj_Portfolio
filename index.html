@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suraj D. Kulkarni - DNA Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #00d4ff, #90EE90, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            color: #87CEEB;
+        }
+
+        @keyframes glow {
+            from { filter: brightness(1) drop-shadow(0 0 5px rgba(0,212,255,0.3)); }
+            to { filter: brightness(1.2) drop-shadow(0 0 20px rgba(0,212,255,0.6)); }
+        }
+
+        .dna-container {
+            position: relative;
+            width: 300px;
+            height: 600px;
+            margin: 80px auto;
+            perspective: 1000px;
+        }
+
+        .dna-helix {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: rotate 15s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .base-pair {
+            position: absolute;
+            width: 100%;
+            height: 30px;
+            left: 50%;
+            transform-style: preserve-3d;
+            transform-origin: center center;
+        }
+
+        .nucleotide {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 12px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(255,255,255,0.2);
+        }
+
+        .nucleotide:hover {
+            transform: scale(1.15);
+            filter: brightness(1.3) drop-shadow(0 0 15px currentColor);
+        }
+
+        .nucleotide.left {
+            left: -60px;
+            transform-origin: right center;
+        }
+
+        .nucleotide.right {
+            right: -60px;
+            transform-origin: left center;
+        }
+
+        .nucleotide.active {
+            animation: nucleotideGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes nucleotideGlow {
+            from { 
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            to { 
+                transform: scale(1.1);
+                filter: brightness(1.4) drop-shadow(0 0 20px currentColor);
+            }
+        }
+
+        /* Enhanced 3D DNA Base Colors */
+        .adenine { 
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 50%, #d32f2f 100%);
+            border: 2px solid rgba(255,107,107,0.6);
+        }
+        .thymine { 
+            background: linear-gradient(135deg, #4ecdc4 0%, #26a69a 50%, #00695c 100%);
+            border: 2px solid rgba(78,205,196,0.6);
+        }
+        .guanine { 
+            background: linear-gradient(135deg, #ffd93d 0%, #ffc107 50%, #ff8f00 100%);
+            border: 2px solid rgba(255,217,61,0.6);
+        }
+        .cytosine { 
+            background: linear-gradient(135deg, #6c5ce7 0%, #5e35b1 50%, #311b92 100%);
+            border: 2px solid rgba(108,92,231,0.6);
+        }
+
+        .hydrogen-bonds {
+            position: absolute;
+            left: -40px;
+            right: -40px;
+            top: 50%;
+            height: 6px;
+            transform: translateY(-50%);
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255,255,255,0.9) 15%, 
+                rgba(255,255,255,1) 50%, 
+                rgba(255,255,255,0.9) 85%, 
+                transparent 100%);
+            animation: bondPulse 2.5s ease-in-out infinite;
+            border-radius: 3px;
+            box-shadow: 
+                0 0 12px rgba(255,255,255,0.6),
+                inset 0 1px 2px rgba(255,255,255,0.8),
+                inset 0 -1px 2px rgba(0,0,0,0.3);
+        }
+
+        @keyframes bondPulse {
+            0%, 100% { 
+                opacity: 0.8;
+                transform: translateY(-50%) scaleX(1);
+                filter: brightness(1);
+            }
+            50% { 
+                opacity: 1;
+                transform: translateY(-50%) scaleX(1.05);
+                filter: brightness(1.2);
+            }
+        }
+
+        .info-panel {
+            position: fixed;
+            top: 50%;
+            right: -450px;
+            transform: translateY(-50%);
+            width: 420px;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(0,212,255,0.3);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .info-panel.active {
+            right: 20px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #00d4ff;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ff6b9d;
+        }
+
+        .panel-title {
+            color: #00d4ff;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #00d4ff;
+            padding-bottom: 10px;
+        }
+
+        .sequence-info {
+            background: rgba(0,212,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #00d4ff;
+        }
+
+        .sequence-title {
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+
+        .experience-item {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border-left: 4px solid #00d4ff;
+        }
+
+        .experience-title {
+            font-weight: bold;
+            color: #87CEEB;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .experience-company {
+            color: #a29bfe;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+
+        .experience-date {
+            color: #7dd3d3;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .experience-description {
+            color: #e0e0e0;
+            line-height: 1.5;
+            font-size: 0.9em;
+        }
+
+        .experience-description ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .experience-description li {
+            margin-bottom: 8px;
+            color: #e0e0e0;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(45deg, #00d4ff, #6c5ce7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+
+        .legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(0,212,255,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #00d4ff;
+            text-align: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .legend-item:hover {
+            transform: translateX(5px);
+        }
+
+        .legend-base {
+            width: 30px;
+            height: 15px;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+        .contact-info {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(0,212,255,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .contact-info a {
+            color: #00d4ff;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.2s;
+        }
+
+        .contact-info a:hover {
+            color: #ff6b9d;
+        }
+
+        .floating-molecules {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .molecule {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(0,212,255,0.6);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 1; }
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(0,212,255,0.3);
+        }
+
+        .control-btn {
+            background: linear-gradient(45deg, #00d4ff, #6c5ce7);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,212,255,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .dna-container {
+                width: 90%;
+                height: 500px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .info-panel {
+                width: 90%;
+                right: -100%;
+            }
+            
+            .info-panel.active {
+                right: 5%;
+            }
+            
+            .legend, .contact-info, .controls {
+                position: relative;
+                margin: 20px auto;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-molecules" id="molecules"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Suraj D. Kulkarni</h1>
+            <p>Psychobiology Student | Research Scholar | DNA of Innovation</p>
+        </div>
+
+        <div class="dna-container">
+            <div class="dna-helix" id="dnaHelix">
+                <!-- DNA base pairs will be generated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-title">DNA Base Legend</div>
+            <div class="legend-item" onclick="showSection('adenine')">
+                <div class="legend-base adenine"></div>
+                <span>Adenine (A) - Research & Publications</span>
+            </div>
+            <div class="legend-item" onclick="showSection('thymine')">
+                <div class="legend-base thymine"></div>
+                <span>Thymine (T) - Clinical Experience</span>
+            </div>
+            <div class="legend-item" onclick="showSection('guanine')">
+                <div class="legend-base guanine"></div>
+                <span>Guanine (G) - Leadership & Impact</span>
+            </div>
+            <div class="legend-item" onclick="showSection('cytosine')">
+                <div class="legend-base cytosine"></div>
+                <span>Cytosine (C) - Education & Awards</span>
+            </div>
+        </div>
+
+        <div class="contact-info">
+            <div><strong>Contact Suraj</strong></div>
+            <div style="margin-top: 8px;">
+                <a href="mailto:surajkulkarni205@gmail.com">📧 Email</a>
+                <a href="https://www.linkedin.com/in/suraj-kulkarni-7bac/" target="_blank">💼 LinkedIn</a>
+                <a href="tel:541-224-3286">📞 Phone</a>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="pauseRotation()">⏸️ Pause</button>
+            <button class="control-btn" onclick="resumeRotation()">▶️ Play</button>
+            <button class="control-btn" onclick="speedUp()">⚡ Speed</button>
+        </div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <button class="close-btn" onclick="closePanel()">&times;</button>
+        <div class="panel-title" id="panelTitle">DNA Sequence</div>
+        <div class="sequence-info" id="sequenceInfo">
+            <div class="sequence-title">Base Pair Information</div>
+            <div id="sequenceDetails">Select a base pair to see details</div>
+        </div>
+        <div class="panel-content" id="panelContent">Content goes here</div>
+    </div>
+
+    <script>
+        // Create floating molecules
+        function createMolecules() {
+            const moleculesContainer = document.getElementById('molecules');
+            for (let i = 0; i < 30; i++) {
+                const molecule = document.createElement('div');
+                molecule.className = 'molecule';
+                molecule.style.left = Math.random() * 100 + '%';
+                molecule.style.top = Math.random() * 100 + '%';
+                molecule.style.animationDelay = Math.random() * 8 + 's';
+                molecule.style.animationDuration = (6 + Math.random() * 4) + 's';
+                moleculesContainer.appendChild(molecule);
+            }
+        }
+
+        // DNA sequence data with base pair complementarity
+        const dnaSequence = [
+            { left: 'A', right: 'T', category: 'adenine' },
+            { left: 'T', right: 'A', category: 'thymine' },
+            { left: 'G', right: 'C', category: 'guanine' },
+            { left: 'C', right: 'G', category: 'cytosine' },
+            { left: 'A', right: 'T', category: 'adenine' },
+            { left: 'G', right: 'C', category: 'guanine' },
+            { left: 'T', right: 'A', category: 'thymine' },
+            { left: 'C', right: 'G', category: 'cytosine' },
+            { left: 'A', right: 'T', category: 'adenine' },
+            { left: 'T', right: 'A', category: 'thymine' },
+            // Second helix turn
+            { left: 'G', right: 'C', category: 'guanine' },
+            { left: 'C', right: 'G', category: 'cytosine' },
+            { left: 'A', right: 'T', category: 'adenine' },
+            { left: 'T', right: 'A', category: 'thymine' },
+            { left: 'G', right: 'C', category: 'guanine' },
+            { left: 'C', right: 'G', category: 'cytosine' },
+            { left: 'A', right: 'T', category: 'adenine' },
+            { left: 'T', right: 'A', category: 'thymine' },
+            { left: 'G', right: 'C', category: 'guanine' },
+            { left: 'C', right: 'G', category: 'cytosine' }
+        ];
+
+        // Content for each individual DNA base
+        const baseContent = {
+            A: {
+                title: "Adenine (A) - Research & Publications",
+                sequence: "Adenine pairs with Thymine via 2 hydrogen bonds",
+                content: [
+                    {
+                        title: "Stanford CARE Research Scholar",
+                        company: "Stanford University School of Medicine",
+                        date: "March 2024 - Present",
+                        description: `<ul>
+                            <li>Presented abstract "Cardiovascular Kidney Metabolic Syndrome Stages among Asian Americans" at the American Heart Association's Epi-lifestyle Scientific Sessions 2025. Abstract published in the AHA Circulation journal</li>
+                            <li>Writing 2 manuscripts on Cardiovascular Kidney Metabolic Syndrome and Scleroderma Prevalence among Asian Americans (expected submission date of June 2025)</li>
+                            <li>Developed and presented abstracts and posters at the Stanford CARE Scholars Summer and Winter Research Symposiums</li>
+                        </ul>`,
+                        skills: ["Cardiovascular Research", "Manuscript Writing", "Abstract Presentation", "Data Analysis", "Medical Research", "Epidemiology", "Scientific Writing", "Research Symposiums"]
+                    },
+                    {
+                        title: "Clinical Research Assistant",
+                        company: "Jules Stein Eye Institute (UCLA)",
+                        date: "September 2023 - Present",
+                        description: `<ul>
+                            <li>Delivered an oral presentation at the American Society of Anesthesiologists (ASA) 2024 Annual Meeting in Philadelphia on an abstract titled "Neurocognitive Function at Discharge following Administration of Midazolam or Remimazolam for Cataract Surgery"</li>
+                            <li>Trained and certified in administering the Montreal Cognitive Assessment, a neurocognitive test that assesses multiple dimensions of memory</li>
+                            <li>Investigate differences in pre and post-operation performance on the MOCA among Cataract Surgery patients ages 65 and above</li>
+                            <li>Presented abstracts and oral presentations at UCLA's Undergraduate Research Week</li>
+                        </ul>`,
+                        skills: ["Clinical Research", "MOCA Testing", "Neurocognitive Assessment", "Data Collection", "Oral Presentations", "ASA Conference", "Geriatric Medicine", "Statistical Analysis"]
+                    },
+                    {
+                        title: "Undergraduate Research Assistant",
+                        company: "David Geffen School of Medicine (UCLA)",
+                        date: "June 2022 - July 2023",
+                        description: `<ul>
+                            <li>Utilized techniques to quantify ATM (Ataxia Telangiectasia Mutated) protein levels to further investigate possible neurotherapeutics (Small Molecule Read Through Compounds (SMRT)) to treat Ataxia Telangiectasia, including Clonogenic Assays on Lymphoblastoid cell lines, Western Blots, Enzyme Linked Immunosorbent Assays (ELISA), and Bicinchoninic Acid Assays (BCA)</li>
+                            <li>Analyzed mouse behavior and motor control using 2-cue behavioral analyses with MATLAB through tracking licking behavior</li>
+                            <li>Performed Perfusions on mice with subsequent brain extractions</li>
+                            <li>Utilized hemocytometer to conduct cell-counting for FACS Immune-related Experiments</li>
+                        </ul>`,
+                        skills: ["Western Blots", "ELISA", "BCA Assays", "MATLAB", "Mouse Behavior Analysis", "Cell Culture", "FACS", "Neurotherapeutics", "Protein Quantification", "Clonogenic Assays"]
+                    }
+                ]
+            },
+            T: {
+                title: "Thymine (T) - Clinical Experience",
+                sequence: "Thymine pairs with Adenine via 2 hydrogen bonds",
+                content: [
+                    {
+                        title: "Transforming Care at the Bedside (TCAB) Volunteer",
+                        company: "Cedars Sinai Medical Center",
+                        date: "March 2023 - Present",
+                        description: `<ul>
+                            <li>Shadow nurses during shifts, observe procedures, round on patients, and interact with patients at the bedside</li>
+                            <li>Deliver blankets, food, water, and other supplies to patients</li>
+                            <li>Operate nursing station and answer phone calls while directing specific calls to RN's and CP's</li>
+                        </ul>`,
+                        skills: ["Patient Care", "Bedside Manner", "Nursing Support", "Healthcare Operations", "Patient Communication", "Medical Procedures", "Healthcare Administration"]
+                    },
+                    {
+                        title: "Mental Health Committee Chair & Research Committee Member",
+                        company: "Bhagat Puran Singh Health Initiative (BPSHI)",
+                        date: "March 2023 - Present",
+                        description: `<ul>
+                            <li>Assisted in developing BPSHI's first mental health questionnaire</li>
+                            <li>Volunteer in BPSHI clinics organized at Gurdwaras to direct Sangat members through physical examinations</li>
+                            <li>Assisted in creating a mental-health questionnaire for Sangat members at BPSHI clinics</li>
+                            <li>Conduct invasive and non-invasive measurements, including Glucose and Cholesterol, blood pressure (BP), weight, and Body Mass Index (BMI) checks, and provide Health Education resources to patients during the clinic</li>
+                            <li>Assist in hot meal and water distribution with the rest of BPSHI and The Good Karma LA to collectively provide over 500 hot meals, 500 water bottles, 500 granola bars, and 500 hydration packets on Skid Row in Downtown Los Angeles</li>
+                            <li>Conduct weekly presentations on healthcare issues that impact the Punjabi community and attend professional development events</li>
+                        </ul>`,
+                        skills: ["Mental Health Assessment", "Community Health", "Health Education", "Vital Signs", "BMI Measurement", "Blood Pressure", "Community Outreach", "Cultural Healthcare", "Preventive Care"]
+                    },
+                    {
+                        title: "Summer Intern",
+                        company: "Curaechoice, Inc.",
+                        date: "May 2023 - August 2023",
+                        description: `<ul>
+                            <li>Designed and developed 15+ patient care documents on critical health conditions to optimize the company's mission at delivering healthcare insurance to patients with $0 copays and $0 deductibles</li>
+                            <li>Presented project findings at Curaechoice's Internship Symposium on August 3rd, 2023</li>
+                        </ul>`,
+                        skills: ["Healthcare Documentation", "Patient Care Materials", "Healthcare Insurance", "Project Presentation", "Healthcare Policy", "Medical Writing"]
+                    }
+                ]
+            },
+            G: {
+                title: "Guanine (G) - Leadership & Impact",
+                sequence: "Guanine pairs with Cytosine via 3 hydrogen bonds",
+                content: [
+                    {
+                        title: "Founder and President",
+                        company: "Only Being You | onlybeingyou.org",
+                        date: "September 2020 - Present",
+                        description: `<ul>
+                            <li>Only Being You, a nonprofit founded in light of BLM, empowers minority voices by sharing stories, providing resources, and promoting cultural awareness. (Featured in international newspapers like NASDAQ, Canadian Insider, Medium, Thrive Global, India Post, India West, The Financial Times, American Kahani and statewide/local newspapers; interviewed on ABC KATU)</li>
+                            <li>Published Only Being You Unfiltered, a book containing short stories from minority youth across the globe, that is available on Amazon</li>
+                            <li>Host Only Being You Unfiltered, Only Being You's podcast that focuses on topics in the status quo, including Roe v. Wade, sexual assault awareness, minority representation in the media, mental health within the LGBTQIA+ community, and eating disorders; available on Amazon Music, iHeart Radio, Spotify, and Apple Podcasts</li>
+                            <li>Collaborated with the Roosevelt Network at UCLA to create a podcast season on sexual assault and Title IX regulations</li>
+                            <li>Founded Only Being You UCLA (UCLA's organizational chapter) in May 2023</li>
+                            <li>Partnered with 60+ non-profit and university organizations worldwide on collaborative projects including iCure Health, a non-profit organization that aims to provide preventative care and education on medical diseases (impacted 50,000+ people worldwide), and Girls inc. for Yemen, a non-profit jewelry company that donates all its proceeds to help with the Yemen humanitarian crisis</li>
+                            <li>Received 200K+ Instagram Impressions within one month</li>
+                            <li>Conduct and feature interviews of minority politicians and professors and invite them to share details about their career, experiences with discrimination, and solutions to systemic discrimination; interviewed several public figures, including G.K. Surya Prakash, holder of the Nobel Laureate Chair in Hydrocarbon Chemistry at USC and Aniekan Etesin, a Nigerian medical student currently serving as the Assistant Secretary General of the Sickle Cell Warriors and Healthy Living Foundations</li>
+                        </ul>`,
+                        skills: ["Nonprofit Leadership", "Book Publishing", "Podcast Hosting", "Social Media Management", "Public Speaking", "Community Building", "Mental Health Advocacy", "Cultural Awareness", "Media Relations", "Partnership Development"]
+                    },
+                    {
+                        title: "External Director of Communications",
+                        company: "Bruin Policy Institute",
+                        date: "September 2021 - Present",
+                        description: `<ul>
+                            <li>Direct all outreach aspects, partnerships, programs, and initiatives of the University of California, Los Angeles (UCLA)'s largest policy-related think tank</li>
+                            <li>Led lobbying trip with President of the Los Angeles City Council, Paul Krekorian, to discuss expanding the Sepulveda Transit Corridor and Metro services to UCLA students</li>
+                            <li>Co-authored and published two policy memos, "Improving Access to Healthcare by Reforming UC SHIP Insurance Plan for UC Students," and "Medical Misconduct in Healthcare: Title IX Policy Reform," in the Roosevelt Network's official policy journal</li>
+                            <li>Led presentations multiple symposiums, including the Roosevelt National Expo and UCLA's Undergraduate Research Week</li>
+                        </ul>`,
+                        skills: ["Policy Analysis", "Government Relations", "Healthcare Policy", "Public Transportation", "Policy Writing", "Lobbying", "Strategic Communications", "Think Tank Operations"]
+                    },
+                    {
+                        title: "Co-Chair and Advisor for Mann Mukti's SAATHI Program",
+                        company: "Mann Mukti UCLA",
+                        date: "September 2021 - Present",
+                        description: `<ul>
+                            <li>Coordinate Mann Mukti's peer mentorship program that supports the mental health and emotional needs of South Asian students through encouraging open discourse</li>
+                            <li>Organize mentor-mentee pairings to facilitate a buddy-system among students that helps them feel comfortable expressing themselves and understand that they are part of a safe space</li>
+                            <li>Manage program recruitment and operations</li>
+                        </ul>`,
+                        skills: ["Peer Mentorship", "Mental Health Support", "Program Management", "South Asian Community", "Student Affairs", "Crisis Support"]
+                    }
+                ]
+            },
+            C: {
+                title: "Cytosine (C) - Education & Awards",
+                sequence: "Cytosine pairs with Guanine via 3 hydrogen bonds",
+                content: [
+                    {
+                        title: "Bachelor of Science, Psychobiology",
+                        company: "University of California, Los Angeles (UCLA)",
+                        date: "Expected August 2025",
+                        description: `<ul>
+                            <li>Biomedical Research Minor</li>
+                            <li>Dean's Honor List</li>
+                            <li>Address: 330 De Neve Drive, Los Angeles CA 90095</li>
+                        </ul>`,
+                        skills: ["Psychobiology", "Biomedical Research", "Neuroscience", "Psychology", "Academic Excellence", "Research Methods"]
+                    },
+                    {
+                        title: "Chancellors Service Award",
+                        company: "University of California, Los Angeles (UCLA)",
+                        date: "2025",
+                        description: `<ul>
+                            <li>Designated as a recipient of the selective award given by the university to graduating seniors for their involvement at UCLA and the Los Angeles community</li>
+                        </ul>`,
+                        skills: ["Community Service", "Leadership Excellence", "University Recognition"]
+                    },
+                    {
+                        title: "President's Youth Award",
+                        company: "Asian American Unity Coalition (AAUC)",
+                        date: "2024",
+                        description: `<ul>
+                            <li>Selected as AAUC's recipient of the President's Award. Received the honor in Washington D.C.</li>
+                        </ul>`,
+                        skills: ["Asian American Leadership", "Youth Advocacy", "National Recognition"]
+                    },
+                    {
+                        title: "Truman Scholarship Nominee",
+                        company: "UCLA & National Truman Foundation",
+                        date: "2024",
+                        description: `<ul>
+                            <li>Nominated as one of UCLA's top 4 Truman Nominees to apply for finalist status</li>
+                        </ul>`,
+                        skills: ["Public Service Leadership", "Academic Excellence", "Policy Interest"]
+                    },
+                    {
+                        title: "Prudential Spirit of Community Awards National Honoree",
+                        company: "Prudential & NASSP",
+                        date: "2021",
+                        description: `<ul>
+                            <li>Named as one of America's top 10 youth volunteers (top 5 high school volunteers); received a $7500 scholarship and $5000 grant</li>
+                        </ul>`,
+                        skills: ["Volunteerism", "Community Impact", "National Recognition", "Youth Leadership"]
+                    },
+                    {
+                        title: "Outstanding Emerging Philanthropist",
+                        company: "Benton County Foundation",
+                        date: "2021",
+                        description: `<ul>
+                            <li>First individual recipient of the award from Benton County; honored for creating Only Being You and raising funds for Jackson Street Youth Service's Uprise Campaign, a community-wide campaign dedicated to fighting against youth homelessness; received the most nominations in the award's history</li>
+                        </ul>`,
+                        skills: ["Philanthropy", "Youth Homelessness Advocacy", "Fundraising", "Community Innovation"]
+                    },
+                    {
+                        title: "National Honor Society (NHS) Scholar",
+                        company: "National Honor Society (NHS)",
+                        date: "2021",
+                        description: `<ul>
+                            <li>Selected as one of 600 scholarship recipients across the entire United States; received a college scholarship from NHS</li>
+                        </ul>`,
+                        skills: ["Academic Achievement", "Leadership", "Character", "Service"]
+                    },
+                    {
+                        title: "Coca-Cola Scholarship Semifinalist",
+                        company: "Coca-Cola Scholars Foundation",
+                        date: "2020",
+                        description: `<ul>
+                            <li>1,609 semifinalists selected from 99,403 applicants across the U.S. (1.6% selection rate)</li>
+                        </ul>`,
+                        skills: ["Academic Excellence", "Leadership Potential", "Community Service"]
+                    },
+                    {
+                        title: "NSDA National and International Tournament Qualifier",
+                        company: "National Speech and Debate Association",
+                        date: "2020, 2021",
+                        description: `<ul>
+                            <li>Qualified to compete at the National Speech and Debate Association's National and International Tournaments (Top 3 in Oregon)</li>
+                        </ul>`,
+                        skills: ["Public Speaking", "Debate", "Critical Thinking", "Communication", "Competitive Excellence"]
+                    }
+                ]
+            }
+        };
+
+        // Generate DNA helix without backbones
+        function generateDNA() {
+            const helix = document.getElementById('dnaHelix');
+            
+            // Clear existing helix
+            helix.innerHTML = '';
+            
+            // Create base pairs (no backbones)
+            const basePairs = 20;
+            const height = 600;
+            const spacing = height / basePairs;
+            
+            dnaSequence.forEach((pair, index) => {
+                const basePair = document.createElement('div');
+                basePair.className = 'base-pair';
+                
+                // Tighter spiral with more gradual rotation for smoother helix
+                const angle = (index * 18) % 360; // Reduced from 36 degrees to 18 degrees per step
+                const zPos = 30 * Math.sin(index * 0.15); // Reduced amplitude and frequency
+                const xPos = 30 * Math.cos(index * 0.15); // Reduced amplitude and frequency
+                
+                basePair.style.transform = `
+                    translateX(-50%) 
+                    translateY(${index * spacing}px)
+                    rotateY(${angle}deg)
+                    translateZ(${zPos}px)
+                    translateX(${xPos}px)
+                `;
+                
+                // Left nucleotide
+                const leftNucleotide = document.createElement('div');
+                leftNucleotide.className = `nucleotide left ${pair.category}`;
+                leftNucleotide.textContent = pair.left;
+                leftNucleotide.onclick = () => showBase(pair.left);
+                basePair.appendChild(leftNucleotide);
+                
+                // Thicker hydrogen bonds (no click handler)
+                const bonds = document.createElement('div');
+                bonds.className = 'hydrogen-bonds';
+                basePair.appendChild(bonds);
+                
+                // Right nucleotide
+                const rightNucleotide = document.createElement('div');
+                rightNucleotide.className = `nucleotide right ${pair.category}`;
+                rightNucleotide.textContent = pair.right;
+                rightNucleotide.onclick = () => showBase(pair.right);
+                basePair.appendChild(rightNucleotide);
+                
+                helix.appendChild(basePair);
+            });
+        }
+
+        // Animation controls with speed toggle
+        let rotationPaused = false;
+        let speedLevel = 0; // 0 = normal, 1 = fast, 2 = very fast
+        const speedSettings = [15, 8, 3]; // seconds for animation duration
+        const speedLabels = ["⚡ Speed", "⚡⚡ Faster", "⚡⚡⚡ Reset"];
+
+        function pauseRotation() {
+            const helix = document.getElementById('dnaHelix');
+            helix.style.animationPlayState = 'paused';
+            rotationPaused = true;
+        }
+
+        function resumeRotation() {
+            const helix = document.getElementById('dnaHelix');
+            helix.style.animationPlayState = 'running';
+            rotationPaused = false;
+        }
+
+        function speedUp() {
+            const helix = document.getElementById('dnaHelix');
+            const speedBtn = document.querySelector('.control-btn:last-child');
+            
+            speedLevel = (speedLevel + 1) % speedSettings.length;
+            helix.style.animationDuration = speedSettings[speedLevel] + 's';
+            speedBtn.textContent = speedLabels[speedLevel];
+        }
+
+        function showBase(baseLetter) {
+            const panel = document.getElementById('infoPanel');
+            const title = document.getElementById('panelTitle');
+            const sequenceInfo = document.getElementById('sequenceDetails');
+            const content = document.getElementById('panelContent');
+            
+            const baseData = baseContent[baseLetter];
+            title.textContent = baseData.title;
+            sequenceInfo.textContent = baseData.sequence;
+            
+            let contentHTML = '';
+            baseData.content.forEach(item => {
+                contentHTML += `
+                    <div class="experience-item">
+                        <div class="experience-title">${item.title}</div>
+                        ${item.company ? `<div class="experience-company">${item.company}</div>` : ''}
+                        ${item.date ? `<div class="experience-date">${item.date}</div>` : ''}
+                        <div class="experience-description">${item.description}</div>
+                        ${item.skills ? `
+                            <div class="skills-list">
+                                ${item.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            content.innerHTML = contentHTML;
+            panel.classList.add('active');
+            
+            // Highlight selected nucleotides of the same type
+            document.querySelectorAll('.nucleotide').forEach(nucleotide => nucleotide.classList.remove('active'));
+            document.querySelectorAll('.nucleotide').forEach(nucleotide => {
+                if (nucleotide.textContent === baseLetter) {
+                    nucleotide.classList.add('active');
+                }
+            });
+        }
+
+        function showSection(category, baseData) {
+            // This function is kept for legend compatibility
+            const baseLetter = category === 'adenine' ? 'A' : 
+                              category === 'thymine' ? 'T' : 
+                              category === 'guanine' ? 'G' : 'C';
+            showBase(baseLetter);
+        }
+
+        function closePanel() {
+            document.getElementById('infoPanel').classList.remove('active');
+            document.querySelectorAll('.nucleotide').forEach(nucleotide => nucleotide.classList.remove('active'));
+        }
+
+        // Initialize the DNA helix
+        generateDNA();
+        createMolecules();
+
+        // Close panel when clicking outside
+        document.addEventListener('click', function(event) {
+            const panel = document.getElementById('infoPanel');
+            const nucleotides = document.querySelectorAll('.nucleotide');
+            const legendItems = document.querySelectorAll('.legend-item');
+            
+            let clickedOnTrigger = false;
+            nucleotides.forEach(nucleotide => {
+                if (nucleotide.contains(event.target)) clickedOnTrigger = true;
+            });
+            legendItems.forEach(item => {
+                if (item.contains(event.target)) clickedOnTrigger = true;
+            });
+            
+            if (!panel.contains(event.target) && !clickedOnTrigger) {
+                closePanel();
+            }
+        });
+    </script>
+</body>
+</html>
